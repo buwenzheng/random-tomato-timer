@@ -19,9 +19,10 @@
   }
   .right {
     display: flex;
+    align-items: center;
     gap: 24px;
-    .iconfont.iconfont-volume {
-      font-size: 32px;
+    .iconfont {
+      font-size: 28px;
       opacity: 0.5;
       cursor: pointer;
       color: #333;

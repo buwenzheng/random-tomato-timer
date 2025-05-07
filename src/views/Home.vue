@@ -7,122 +7,33 @@
       </div>
       <div class="right">
         <span class="iconfont iconfont-setting" @click="showSettings = true"></span>
-        <el-popover
-          placement="bottom"
-          width="160"
-          trigger="hover"
-          popper-class="volume-popover"
-        >
-          <template #reference>
-            <span class="iconfont iconfont-volume"></span>
-          </template>
-          <div style="padding: 8px 0;">
-            <el-slider
-              v-model="audio.volume.value"
-              :min="0"
-              :max="100"
-              :step="1"
-              show-tooltip
-              style="width: 120px"
-              @change="audio.playAudio('/static/提示音A.mp3')"
-            />
-          </div>
-        </el-popover>
+        <VolumeControl v-model:volume="audio.volume.value" @change="audio.playAudio('click')" />
       </div>
     </header>
     <div class="timer-container" shadow="hover">
       <div class="circle-progress">
         <svg width="260" height="260">
           <circle cx="130" cy="130" r="120" stroke="#e5e5e5" stroke-width="8" fill="none" />
-          <circle
-            cx="130" cy="130" r="120"
+          <circle cx="130" cy="130" r="120"
             :stroke="timer.state.value.isBreak ? '#ff6b6b' : (timer.state.value.isRandomSounding ? '#279fcf' : '#4a7cff')"
-            stroke-width="8"
-            fill="none"
-            :stroke-dasharray="2 * Math.PI * 120"
-            :stroke-dashoffset="2 * Math.PI * 120 * (1 - progress / 100)"
-            stroke-linecap="round"
-            style="transition: stroke-dashoffset 0.5s;"
-          />
+            stroke-width="8" fill="none" :stroke-dasharray="2 * Math.PI * 120"
+            :stroke-dashoffset="2 * Math.PI * 120 * (1 - progress / 100)" stroke-linecap="round"
+            style="transition: stroke-dashoffset 0.5s;" />
         </svg>
         <div class="timer-display">
           {{ timer.state.value.formatTime(timer.state.value.timeLeft) }}
         </div>
       </div>
       <div class="controls">
-        <el-button
-          type="primary"
-          size="large"
-          @click="handleMainAction"
-          round
-        >
+        <el-button type="primary" size="large" @click="handleMainAction" round>
           {{ mainActionText }}
         </el-button>
-        <el-button
-          size="large"
-          @click="timer.endTimer"
-          :disabled="!timer.state.value.isRunning && !timer.state.value.isPaused"
-          round
-          plain
-        >结束</el-button>
+        <el-button size="large" @click="timer.endTimer"
+          :disabled="!timer.state.value.isRunning && !timer.state.value.isPaused" round plain>结束</el-button>
       </div>
     </div>
-
-    <!-- 设置弹窗 -->
-    <el-dialog
-      v-model="showSettings"
-      title="设置"
-      width="400px"
-      :close-on-click-modal="false"
-      center
-    >
-      <el-form label-position="top">
-        <el-form-item label="番茄钟时长（分钟）">
-          <el-input-number 
-            v-model="settings.settings.value.pomodoroMinutes" 
-            :min="1" 
-            :max="120"
-            style="width: 100%"
-          />
-        </el-form-item>
-        <el-form-item label="休息时长（分钟）">
-          <el-input-number 
-            v-model="settings.settings.value.breakMinutes" 
-            :min="1" 
-            :max="60"
-            style="width: 100%"
-          />
-        </el-form-item>
-        <el-form-item label="随机提示音">
-          <el-switch v-model="settings.settings.value.randomSoundEnabled" active-text="开" inactive-text="关" />
-        </el-form-item>
-        <template v-if="settings.settings.value.randomSoundEnabled">
-          <el-form-item label="播放次数">
-            <el-input-number 
-              v-model="settings.settings.value.randomSoundCount" 
-              :min="3" 
-              :max="10" 
-              :step="1"
-              style="width: 100%"
-            />
-          </el-form-item>
-          <el-form-item label="持续时长">
-            <el-select v-model="settings.settings.value.randomSoundDuration" style="width: 100%">
-              <el-option :label="'10秒'" :value="10" />
-              <el-option :label="'15秒'" :value="15" />
-              <el-option :label="'20秒'" :value="20" />
-            </el-select>
-          </el-form-item>
-        </template>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button type="primary" plain @click="settings.resetSettings">重置</el-button>
-          <el-button type="primary" plain @click="showSettings = false">取消</el-button>
-          <el-button type="primary" @click="settings.saveSettings(); showSettings = false">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <SettingsDialog v-model="showSettings" :settings="settings.settings.value" @save="handleSaveSettings"
+      @cancel="showSettings = false" @reset="handleResetSettings" />
   </div>
 </template>
 
@@ -132,6 +43,9 @@ import { useTimer } from '@/composables/useTimer'
 import { useNotification } from '@/composables/useNotification'
 import { useSettings } from '@/composables/useSettings'
 import { useAudio } from '@/composables/useAudio'
+import TimerDisplay from '@/components/timer/TimerDisplay.vue'
+import SettingsDialog from '@/components/settings/SettingsDialog.vue'
+import VolumeControl from '@/components/audio/VolumeControl.vue'
 import './Home.scss'
 
 const showSettings = ref(false)
@@ -220,4 +134,15 @@ onMounted(() => {
 onUnmounted(() => {
   timer.endTimer()
 })
+
+const handleSaveSettings = (newSettings: typeof settings.settings.value) => {
+  settings.updateSettings(newSettings)
+  showSettings.value = false
+  audio.playAudio('click')
+}
+
+const handleResetSettings = () => {
+  settings.resetSettings()
+  audio.playAudio('click')
+}
 </script>

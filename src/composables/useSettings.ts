@@ -4,10 +4,10 @@ import type { TimerSettings } from '@/types/timer'
 const STORAGE_KEY = 'timer_settings'
 
 const defaultSettings: TimerSettings = {
-  pomodoroMinutes: 30,
+  pomodoroMinutes: 25,
   breakMinutes: 5,
   randomSoundEnabled: false,
-  randomSoundDuration: 15,
+  randomSoundDuration: 10,
   randomSoundCount: 3,
   volume: 100
 }
@@ -39,10 +39,16 @@ export function useSettings() {
     saveSettings()
   }
 
+  const updateSettings = (newSettings: TimerSettings) => {
+    settings.value = { ...newSettings }
+    saveSettings()
+  }
+
   return {
     settings,
     loadSettings,
     saveSettings,
-    resetSettings
+    resetSettings,
+    updateSettings
   }
 } 

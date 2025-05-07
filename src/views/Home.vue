@@ -177,6 +177,14 @@ const startBreak = () => {
   timer = setInterval(() => {
     if (timeLeft.value > 0) {
       timeLeft.value--
+      // 发送计时器状态到 Service Worker
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'TIMER_TICK',
+          timeLeft: timeLeft.value,
+          isBreak: isBreak.value
+        });
+      }
     } else {
       clearInterval(timer)
       isRunning.value = false
@@ -197,6 +205,14 @@ const startTimer = () => {
         timeLeft.value--
         if (randomSoundEnabled.value && !isRandomSounding.value && !randomSoundTimeout) {
           scheduleNextRandomSound()
+        }
+        // 发送计时器状态到 Service Worker
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({
+            type: 'TIMER_TICK',
+            timeLeft: timeLeft.value,
+            isBreak: isBreak.value
+          });
         }
       } else {
         clearInterval(timer)
@@ -284,7 +300,22 @@ const handleMainAction = () => {
 }
 
 onMounted(() => {
-  // No additional logic needed for volume initialization
+  // 注册 Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then((registration) => {
+      console.log('Service Worker registered:', registration);
+    }).catch((error) => {
+      console.error('Service Worker registration failed:', error);
+    });
+  }
+
+  // 监听来自 Service Worker 的消息
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data.type === 'TIMER_UPDATE') {
+      timeLeft.value = event.data.timeLeft;
+      isBreak.value = event.data.isBreak;
+    }
+  });
 })
 
 onUnmounted(() => {

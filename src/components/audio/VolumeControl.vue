@@ -1,17 +1,11 @@
 <template>
-  <el-popover
-    placement="bottom"
-    width="160"
-    trigger="hover"
-    popper-class="volume-popover"
-  >
+  <el-popover placement="bottom" width="160" trigger="hover" popper-class="volume-popover">
     <template #reference>
       <span class="iconfont iconfont-volume"></span>
     </template>
-    <div style="padding: 8px 0;">
+    <div style="padding: 8px 0">
       <el-slider
-        :model-value="volume"
-        @update:model-value="$emit('update:volume', $event)"
+        v-model="modelValue"
         :min="0"
         :max="100"
         :step="1"
@@ -24,14 +18,21 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+const props = defineProps<{
   volume: number
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:volume', value: number): void
   (e: 'change'): void
 }>()
+
+const modelValue = computed({
+  get: () => props.volume,
+  set: (value: number) => emit('update:volume', value)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -45,4 +46,4 @@ defineEmits<{
     opacity: 0.7;
   }
 }
-</style> 
+</style>

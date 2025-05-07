@@ -1,14 +1,14 @@
 @font-face {
-  font-family: "iconfont"; /* Project id 4914270 */
+  font-family: 'iconfont'; /* Project id 4914270 */
   /* Color fonts */
-  src: 
-       url('iconfont.woff2?t=1746606090113') format('woff2'),
-       url('iconfont.woff?t=1746606090113') format('woff'),
-       url('iconfont.ttf?t=1746606090113') format('truetype');
+  src:
+    url('iconfont.woff2?t=1746606090113') format('woff2'),
+    url('iconfont.woff?t=1746606090113') format('woff'),
+    url('iconfont.ttf?t=1746606090113') format('truetype');
 }
 
 .iconfont {
-  font-family: "iconfont" !important;
+  font-family: 'iconfont' !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
@@ -16,22 +16,21 @@
 }
 
 .iconfont-info:before {
-  content: "\e63a";
+  content: '\e63a';
 }
 
 .iconfont-setting:before {
-  content: "\e966";
+  content: '\e966';
 }
 
 .iconfont-volume:before {
-  content: "\e668";
+  content: '\e668';
 }
 
 .iconfont-coffee:before {
-  content: "\e86b";
+  content: '\e86b';
 }
 
 .iconfont-zhuanzhu:before {
-  content: "\e600";
+  content: '\e600';
 }
-

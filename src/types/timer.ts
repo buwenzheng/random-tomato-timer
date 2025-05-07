@@ -35,4 +35,4 @@ export interface NotificationOptions {
   badge?: string
 }
 
-export type TimerAction = 'start' | 'pause' | 'resume' | 'end' | 'break' 
+export type TimerAction = 'start' | 'pause' | 'resume' | 'end' | 'break'

@@ -62,4 +62,4 @@ describe('Home.vue', () => {
     wrapper.vm.startRandomSound()
     expect(playAudio).toHaveBeenCalledWith('/static/提示音A.mp3')
   })
-}) 
+})

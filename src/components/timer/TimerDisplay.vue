@@ -3,14 +3,16 @@
     <svg width="260" height="260">
       <circle cx="130" cy="130" r="120" stroke="#e5e5e5" stroke-width="8" fill="none" />
       <circle
-        cx="130" cy="130" r="120"
-        :stroke="isBreak ? '#ff6b6b' : (isRandomSounding ? '#279fcf' : '#4a7cff')"
+        cx="130"
+        cy="130"
+        r="120"
+        :stroke="isBreak ? '#ff6b6b' : isRandomSounding ? '#279fcf' : '#4a7cff'"
         stroke-width="8"
         fill="none"
         :stroke-dasharray="2 * Math.PI * 120"
         :stroke-dashoffset="2 * Math.PI * 120 * (1 - progress / 100)"
         stroke-linecap="round"
-        style="transition: stroke-dashoffset 0.5s;"
+        style="transition: stroke-dashoffset 0.5s"
       />
     </svg>
     <div class="timer-display">
@@ -69,4 +71,4 @@ const formatTime = (time: number) => {
     letter-spacing: 2px;
   }
 }
-</style> 
+</style>

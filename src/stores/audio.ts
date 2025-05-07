@@ -37,13 +37,13 @@ export const useAudioStore = defineStore('audio', () => {
 
     const source = context.createBufferSource()
     const gainNode = context.createGain()
-    
+
     source.buffer = buffer
     gainNode.gain.value = volume.value / 100
-    
+
     source.connect(gainNode)
     gainNode.connect(context.destination)
-    
+
     source.start(0)
   }
 
@@ -58,4 +58,4 @@ export const useAudioStore = defineStore('audio', () => {
     playAudio,
     setVolume
   }
-}) 
+})

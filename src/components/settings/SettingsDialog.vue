@@ -9,17 +9,17 @@
   >
     <el-form label-position="top">
       <el-form-item label="番茄钟时长（分钟）">
-        <el-input-number 
-          v-model="localSettings.pomodoroMinutes" 
-          :min="1" 
+        <el-input-number
+          v-model="localSettings.pomodoroMinutes"
+          :min="1"
           :max="120"
           style="width: 100%"
         />
       </el-form-item>
       <el-form-item label="休息时长（分钟）">
-        <el-input-number 
-          v-model="localSettings.breakMinutes" 
-          :min="1" 
+        <el-input-number
+          v-model="localSettings.breakMinutes"
+          :min="1"
           :max="60"
           style="width: 100%"
         />
@@ -29,10 +29,10 @@
       </el-form-item>
       <template v-if="localSettings.randomSoundEnabled">
         <el-form-item label="播放次数">
-          <el-input-number 
-            v-model="localSettings.randomSoundCount" 
-            :min="3" 
-            :max="10" 
+          <el-input-number
+            v-model="localSettings.randomSoundCount"
+            :min="3"
+            :max="10"
             :step="1"
             style="width: 100%"
           />
@@ -74,9 +74,13 @@ const emit = defineEmits<{
 
 const localSettings = ref<TimerSettings>({ ...props.settings })
 
-watch(() => props.settings, (newSettings) => {
-  localSettings.value = { ...newSettings }
-}, { deep: true })
+watch(
+  () => props.settings,
+  newSettings => {
+    localSettings.value = { ...newSettings }
+  },
+  { deep: true }
+)
 
 const handleSave = () => {
   emit('save', localSettings.value)
@@ -90,4 +94,4 @@ const handleCancel = () => {
 const handleReset = () => {
   emit('reset')
 }
-</script> 
+</script>

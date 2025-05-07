@@ -72,11 +72,14 @@ export function useTimer(settings: TimerSettings): Timer {
     state.value.progressOffset = 0
   }
 
-  watch(() => settings.pomodoroMinutes, (val) => {
-    if (!state.value.isRunning && !state.value.isPaused) {
-      state.value.timeLeft = val * 60
+  watch(
+    () => settings.pomodoroMinutes,
+    val => {
+      if (!state.value.isRunning && !state.value.isPaused) {
+        state.value.timeLeft = val * 60
+      }
     }
-  })
+  )
 
   onUnmounted(() => {
     clearTimers()

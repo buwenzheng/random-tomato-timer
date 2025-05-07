@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { TimerSettings } from '@/types/timer'
 
 const STORAGE_KEY = 'timer_settings'
@@ -59,7 +59,8 @@ export const useTimerStore = defineStore('timer', () => {
   const startTimer = () => {
     isRunning.value = true
     isPaused.value = false
-    timeLeft.value = (isBreak.value ? settings.value.breakMinutes : settings.value.pomodoroMinutes) * 60
+    timeLeft.value =
+      (isBreak.value ? settings.value.breakMinutes : settings.value.pomodoroMinutes) * 60
   }
 
   const pauseTimer = () => {
@@ -82,7 +83,8 @@ export const useTimerStore = defineStore('timer', () => {
   const resetTimer = () => {
     isRunning.value = false
     isPaused.value = false
-    timeLeft.value = (isBreak.value ? settings.value.breakMinutes : settings.value.pomodoroMinutes) * 60
+    timeLeft.value =
+      (isBreak.value ? settings.value.breakMinutes : settings.value.pomodoroMinutes) * 60
   }
 
   const decrementTime = () => {
@@ -110,4 +112,4 @@ export const useTimerStore = defineStore('timer', () => {
     resetTimer,
     decrementTime
   }
-}) 
+})

@@ -5,22 +5,24 @@ export function useNotification() {
   const notificationPermission = ref(false)
 
   const requestPermission = async () => {
-    if (!("Notification" in window)) {
-      console.log("This browser does not support notifications")
+    if (!('Notification' in window)) {
+      // eslint-disable-next-line no-console
+      console.log('This browser does not support notifications')
       return
     }
 
     try {
       const permission = await Notification.requestPermission()
-      notificationPermission.value = permission === "granted"
+      notificationPermission.value = permission === 'granted'
     } catch (error) {
-      console.error("Error requesting notification permission:", error)
+      // eslint-disable-next-line no-console
+      console.error('Error requesting notification permission:', error)
     }
   }
 
   const sendNotification = (title: string, options: NotificationOptions = {}) => {
     if (!notificationPermission.value) return
-    
+
     if (document.hidden || import.meta.env.DEV) {
       new Notification(title, {
         icon: '/static/铃声.png',
@@ -35,4 +37,4 @@ export function useNotification() {
     requestPermission,
     sendNotification
   }
-} 
+}

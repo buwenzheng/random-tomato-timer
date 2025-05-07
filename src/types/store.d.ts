@@ -1,8 +1,7 @@
-import { Store } from 'pinia'
 import type { DefineStoreOptions } from 'pinia'
 
 declare module 'pinia' {
-  export interface DefineStoreOptionsBase<S, Store> {
+  export interface DefineStoreOptionsBase {
     persist?:
       | boolean
       | {

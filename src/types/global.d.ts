@@ -17,7 +17,7 @@ declare global {
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
+  const component: DefineComponent<{}, {}, unknown>
   export default component
 }
 
@@ -37,7 +37,7 @@ declare module '*.jpg' {
 }
 
 declare module '*.json' {
-  const content: any
+  const content: Record<string, unknown>
   export default content
 }
 

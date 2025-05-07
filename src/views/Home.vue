@@ -100,6 +100,7 @@ const randomSoundEnabled = ref(false)
 const randomSoundDuration = ref(10)
 const isRandomSounding = ref(false)
 const volume = ref(100)
+const notificationPermission = ref(false)
 let timer = null
 let randomSoundTimer = null
 let randomSoundTimeout = null
@@ -169,40 +170,34 @@ const clearRandomSound = () => {
   isRandomSounding.value = false
 }
 
-const startBreak = () => {
-  isBreak.value = true
-  timeLeft.value = breakMinutes.value * 60
-  isRunning.value = true
-  isPaused.value = false
-  timer = setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--
-      // 发送计时器状态到 Service Worker
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'TIMER_TICK',
-          timeLeft: timeLeft.value,
-          isBreak: isBreak.value
-        });
-      }
-    } else {
-      clearInterval(timer)
-      isRunning.value = false
-      isPaused.value = false
-      isBreak.value = false
-      playAudio('/static/提示音C.mp3')
-      timeLeft.value = pomodoroMinutes.value * 60
-    }
-  }, 1000)
+const updateTabTitle = () => {
+  const minutes = Math.floor(timeLeft.value / 60)
+  const seconds = timeLeft.value % 60
+  const prefix = isBreak.value ? '休息中' : '专注中'
+  const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  document.title = `${prefix} ${timeString} - 随机番茄钟`
+
+  // 每分钟发送一次通知
+  if (seconds === 0 && minutes > 0) {
+    sendNotification(`${prefix}`, {
+      body: `剩余时间：${timeString}`,
+      tag: 'timer-update'
+    });
+  }
 }
 
 const startTimer = () => {
   if (!isRunning.value && !isPaused.value) {
     isRunning.value = true
     isPaused.value = false
+    sendNotification('开始专注', {
+      body: `专注时长：${pomodoroMinutes.value}分钟`,
+      tag: 'timer-start'
+    });
     timer = setInterval(() => {
       if (timeLeft.value > 0) {
         timeLeft.value--
+        updateTabTitle()
         if (randomSoundEnabled.value && !isRandomSounding.value && !randomSoundTimeout) {
           scheduleNextRandomSound()
         }
@@ -220,7 +215,12 @@ const startTimer = () => {
         isPaused.value = false
         clearRandomSound()
         playAudio('/static/提示音C.mp3')
+        sendNotification('专注结束', {
+          body: '该休息了！',
+          tag: 'timer-end'
+        });
         timeLeft.value = breakMinutes.value * 60
+        updateTabTitle()
       }
     }, 1000)
   }
@@ -262,6 +262,44 @@ const resumeTimer = () => {
   }
 }
 
+const startBreak = () => {
+  isBreak.value = true
+  timeLeft.value = breakMinutes.value * 60
+  isRunning.value = true
+  isPaused.value = false
+  sendNotification('开始休息', {
+    body: `休息时长：${breakMinutes.value}分钟`,
+    tag: 'break-start'
+  });
+  updateTabTitle()
+  timer = setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--
+      updateTabTitle()
+      // 发送计时器状态到 Service Worker
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'TIMER_TICK',
+          timeLeft: timeLeft.value,
+          isBreak: isBreak.value
+        });
+      }
+    } else {
+      clearInterval(timer)
+      isRunning.value = false
+      isPaused.value = false
+      isBreak.value = false
+      playAudio('/static/提示音C.mp3')
+      sendNotification('休息结束', {
+        body: '开始新的专注吧！',
+        tag: 'break-end'
+      });
+      timeLeft.value = pomodoroMinutes.value * 60
+      updateTabTitle()
+    }
+  }, 1000)
+}
+
 const endTimer = () => {
   clearInterval(timer)
   isRunning.value = false
@@ -273,6 +311,7 @@ const endTimer = () => {
     timeLeft.value = breakMinutes.value * 60
   }
   clearRandomSound()
+  document.title = '随机番茄钟'
 }
 
 const mainActionText = computed(() => {
@@ -299,6 +338,33 @@ const handleMainAction = () => {
   }
 }
 
+const requestNotificationPermission = async () => {
+  if (!("Notification" in window)) {
+    console.log("This browser does not support notifications");
+    return;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    notificationPermission.value = permission === "granted";
+  } catch (error) {
+    console.error("Error requesting notification permission:", error);
+  }
+}
+
+const sendNotification = (title, options = {}) => {
+  if (!notificationPermission.value) return;
+  
+  // 如果页面不可见或开发环境，发送通知
+  if (document.hidden || import.meta.env.DEV) {
+    new Notification(title, {
+      icon: '/static/铃声.png',
+      badge: '/static/铃声.png',
+      ...options
+    });
+  }
+}
+
 onMounted(() => {
   // 注册 Service Worker
   if ('serviceWorker' in navigator) {
@@ -314,8 +380,15 @@ onMounted(() => {
     if (event.data.type === 'TIMER_UPDATE') {
       timeLeft.value = event.data.timeLeft;
       isBreak.value = event.data.isBreak;
+      updateTabTitle();
     }
   });
+
+  // 初始化标签页标题
+  document.title = '随机番茄钟'
+
+  // 请求通知权限
+  requestNotificationPermission()
 })
 
 onUnmounted(() => {

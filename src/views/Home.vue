@@ -1,7 +1,10 @@
 <template>
   <div class="home">
     <header class="top-bar">
-      <div class="left">随机番茄钟</div>
+      <div class="left">
+        <span class="iconfont" :class="isBreak ? 'iconfont-coffee' : 'iconfont-zhuanzhu'"></span>
+        随机番茄钟
+      </div>
       <div class="right">
         <el-popover
           placement="bottom"
@@ -10,7 +13,7 @@
           popper-class="volume-popover"
         >
           <template #reference>
-            <img src="/static/铃声.png" alt="音量" class="icon" />
+            <span class="iconfont iconfont-volume"></span>
           </template>
           <div style="padding: 8px 0;">
             <el-slider
@@ -173,13 +176,13 @@ const clearRandomSound = () => {
 const updateTabTitle = () => {
   const minutes = Math.floor(timeLeft.value / 60)
   const seconds = timeLeft.value % 60
-  const prefix = isBreak.value ? '休息中' : '专注中'
+  const prefix = isBreak.value ? '☕' : '🎯'
   const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
   document.title = `${prefix} ${timeString} - 随机番茄钟`
 
   // 每分钟发送一次通知
   if (seconds === 0 && minutes > 0) {
-    sendNotification(`${prefix}`, {
+    sendNotification(`${isBreak.value ? '休息中' : '专注中'}`, {
       body: `剩余时间：${timeString}`,
       tag: 'timer-update'
     });
@@ -396,3 +399,23 @@ onUnmounted(() => {
   clearRandomSound()
 })
 </script>
+
+<style lang="scss">
+.home {
+  .top-bar {
+    .iconfont {
+      font-size: 20px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+  }
+
+  .timer-display {
+    .iconfont {
+      font-size: 24px;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+  }
+}
+</style>

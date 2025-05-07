@@ -1,0 +1,30 @@
+{
+  "id": "4914270",
+  "name": "random-tomato-timer",
+  "font_family": "iconfont",
+  "css_prefix_text": "iconfont-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "835845",
+      "name": "volume",
+      "font_class": "volume",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "11254380",
+      "name": "Coffee",
+      "font_class": "coffee",
+      "unicode": "e86b",
+      "unicode_decimal": 59499
+    },
+    {
+      "icon_id": "18028792",
+      "name": "专注",
+      "font_class": "zhuanzhu",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

@@ -46,6 +46,7 @@
         </el-form-item>
       </template>
     </el-form>
+    <KeyboardShortcuts />
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" plain @click="handleReset">重置</el-button>
@@ -59,6 +60,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { TimerSettings } from '@/types/timer'
+import KeyboardShortcuts from './KeyboardShortcuts.vue'
 
 interface Props {
   modelValue: boolean

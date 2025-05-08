@@ -30,6 +30,14 @@ export function useTimer(settings: TimerSettings): Timer {
     randomSoundTimeout = null
   }
 
+  const updateTimeLeft = () => {
+    if (!state.value.isRunning && !state.value.isPaused) {
+      state.value.timeLeft = state.value.isBreak
+        ? settings.breakMinutes * 60
+        : settings.pomodoroMinutes * 60
+    }
+  }
+
   const startTimer = () => {
     clearTimers()
     if (state.value.isBreak) {
@@ -76,9 +84,7 @@ export function useTimer(settings: TimerSettings): Timer {
   watch(
     () => settings,
     () => {
-      if (!state.value.isRunning && !state.value.isPaused) {
-        state.value.timeLeft = state.value.isBreak ? settings.breakMinutes * 60 : settings.pomodoroMinutes * 60
-      }
+      updateTimeLeft()
     },
     { deep: true }
   )

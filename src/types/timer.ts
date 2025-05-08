@@ -28,6 +28,23 @@ export interface Timer {
   endTimer: () => void
 }
 
+export interface PomodoroRecord {
+  id: string
+  startTime: number
+  endTime: number
+  duration: number
+  isBreak: boolean
+  completed: boolean
+}
+
+export interface DailyStats {
+  date: string // YYYY-MM-DD
+  totalFocusTime: number // 总专注时间（分钟）
+  totalBreakTime: number // 总休息时间（分钟）
+  completedPomodoros: number // 完成的番茄钟数量
+  completedTasks: number // 完成的任务数量（保留字段以保持兼容性）
+}
+
 export interface NotificationOptions {
   body?: string
   tag?: string

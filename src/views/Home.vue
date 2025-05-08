@@ -4,7 +4,7 @@
       <div class="left">
         <span
           class="iconfont"
-          :class="timer.state.value.isBreak ? 'iconfont-coffee' : 'iconfont-zhuanzhu'"
+          :class="timer.state.isBreak ? 'iconfont-coffee' : 'iconfont-zhuanzhu'"
         ></span>
         随机番茄钟
       </div>
@@ -22,9 +22,9 @@
             cy="130"
             r="120"
             :stroke="
-              timer.state.value.isBreak
+              timer.state.isBreak
                 ? '#ff6b6b'
-                : timer.state.value.isRandomSounding
+                : timer.state.isRandomSounding
                   ? '#279fcf'
                   : '#4a7cff'
             "
@@ -37,7 +37,7 @@
           />
         </svg>
         <div class="timer-display">
-          {{ timer.state.value.formatTime(timer.state.value.timeLeft) }}
+          {{ timer.state.formatTime(timer.state.timeLeft) }}
         </div>
       </div>
       <div class="controls">
@@ -47,7 +47,7 @@
         <el-button
           size="large"
           @click="timer.endTimer"
-          :disabled="!timer.state.value.isRunning && !timer.state.value.isPaused"
+          :disabled="!timer.state.isRunning && !timer.state.isPaused"
           round
           plain
           >结束</el-button
@@ -83,43 +83,52 @@ onMounted(() => {
   settings.loadSettings()
 })
 
-const timer = useTimer(settings.settings.value)
+const timer = ref(useTimer(settings.settings.value))
+
+// 监听 settings 的变化
+watch(
+  () => settings.settings.value,
+  () => {
+    timer.value = useTimer(settings.settings.value)
+  },
+  { deep: true }
+)
 
 const mainActionText = computed(() => {
-  if (!timer.state.value.isRunning && !timer.state.value.isPaused) {
-    return timer.state.value.isBreak ? '开始休息' : '开始专注'
+  if (!timer.value.state.isRunning && !timer.value.state.isPaused) {
+    return timer.value.state.isBreak ? '开始休息' : '开始专注'
   }
-  if (timer.state.value.isBreak) return '休息中'
-  return timer.state.value.isPaused ? '继续专注' : '暂停专注'
+  if (timer.value.state.isBreak) return '休息中'
+  return timer.value.state.isPaused ? '继续专注' : '暂停专注'
 })
 
 const progress = computed(() => {
-  const total = timer.state.value.isBreak
+  const total = timer.value.state.isBreak
     ? settings.settings.value.breakMinutes
     : settings.settings.value.pomodoroMinutes
-  const current = timer.state.value.timeLeft / 60 // 将秒转换为分钟
+  const current = timer.value.state.timeLeft / 60 // 将秒转换为分钟
   return (current / total) * 100 // 直接使用当前时间除以总时间
 })
 
 const handleMainAction = () => {
-  if (!timer.state.value.isRunning && !timer.state.value.isPaused) {
-    timer.startTimer()
-  } else if (timer.state.value.isPaused) {
-    timer.resumeTimer()
+  if (!timer.value.state.isRunning && !timer.value.state.isPaused) {
+    timer.value.startTimer()
+  } else if (timer.value.state.isPaused) {
+    timer.value.resumeTimer()
   } else {
-    timer.pauseTimer()
+    timer.value.pauseTimer()
   }
 }
 
 const updateTabTitle = () => {
-  const minutes = Math.floor(timer.state.value.timeLeft / 60)
-  const seconds = timer.state.value.timeLeft % 60
-  const prefix = timer.state.value.isBreak ? '☕' : '🎯'
+  const minutes = Math.floor(timer.value.state.timeLeft / 60)
+  const seconds = timer.value.state.timeLeft % 60
+  const prefix = timer.value.state.isBreak ? '☕' : '🎯'
   const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
   document.title = `${prefix} ${timeString} - 随机番茄钟`
 
   if (seconds === 0 && minutes > 0) {
-    notification.sendNotification(`${timer.state.value.isBreak ? '休息中' : '专注中'}`, {
+    notification.sendNotification(`${timer.value.state.isBreak ? '休息中' : '专注中'}`, {
       body: `剩余时间：${timeString}`,
       tag: 'timer-update'
     })
@@ -127,14 +136,14 @@ const updateTabTitle = () => {
 }
 
 watch(
-  () => timer.state.value.timeLeft,
+  () => timer.value.state.timeLeft,
   () => {
     updateTabTitle()
-    if (timer.state.value.timeLeft === 0) {
-      if (timer.state.value.isBreak) {
-        timer.startTimer() // 休息结束后，开始新的专注
+    if (timer.value.state.timeLeft === 0) {
+      if (timer.value.state.isBreak) {
+        timer.value.startTimer() // 休息结束后，开始新的专注
       } else {
-        timer.endTimer() // 专注结束后，进入休息状态
+        timer.value.endTimer() // 专注结束后，进入休息状态
       }
     }
   }
@@ -158,8 +167,8 @@ onMounted(() => {
 
   navigator.serviceWorker.addEventListener('message', event => {
     if (event.data.type === 'TIMER_UPDATE') {
-      timer.state.value.timeLeft = event.data.timeLeft
-      timer.state.value.isBreak = event.data.isBreak
+      timer.value.state.timeLeft = event.data.timeLeft
+      timer.value.state.isBreak = event.data.isBreak
       updateTabTitle()
     }
   })
@@ -168,7 +177,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  timer.endTimer()
+  timer.value.endTimer()
 })
 
 const handleSaveSettings = (newSettings: typeof settings.settings.value) => {

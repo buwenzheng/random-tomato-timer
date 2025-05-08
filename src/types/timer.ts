@@ -21,7 +21,7 @@ export interface TimerState {
 }
 
 export interface Timer {
-  state: Ref<TimerState>
+  state: TimerState
   startTimer: () => void
   pauseTimer: () => void
   resumeTimer: () => void

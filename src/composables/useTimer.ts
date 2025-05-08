@@ -72,13 +72,15 @@ export function useTimer(settings: TimerSettings): Timer {
     state.value.progressOffset = 0
   }
 
+  // 监听 settings 的变化
   watch(
-    () => settings.pomodoroMinutes,
-    val => {
+    () => settings,
+    () => {
       if (!state.value.isRunning && !state.value.isPaused) {
-        state.value.timeLeft = val * 60
+        state.value.timeLeft = state.value.isBreak ? settings.breakMinutes * 60 : settings.pomodoroMinutes * 60
       }
-    }
+    },
+    { deep: true }
   )
 
   onUnmounted(() => {
@@ -86,7 +88,7 @@ export function useTimer(settings: TimerSettings): Timer {
   })
 
   return {
-    state,
+    state: state.value,
     startTimer,
     pauseTimer,
     resumeTimer,

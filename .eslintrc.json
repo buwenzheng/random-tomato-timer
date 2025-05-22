@@ -13,6 +13,13 @@
     "vue/multi-word-component-names": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-    "no-console": ["warn", { "allow": ["warn", "error"] }]
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "eol-last": ["warn", "always"],
+    "no-trailing-spaces": "error",
+    "prettier/prettier": ["error", {
+      "endOfLine": "auto",
+      "insertFinalNewline": true,
+      "trimTrailingWhitespace": true
+    }]
   }
 } 

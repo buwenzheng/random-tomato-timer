@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -20,6 +21,12 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
       dts: 'src/types/components.d.ts'
+    }),
+    visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true,
+      filename: 'dist/stats.html'
     })
   ],
   resolve: {
@@ -48,14 +55,29 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vue-vendor': ['vue', 'vue-router', 'pinia'],
-          'composables': [
+          'element-plus': ['element-plus'],
+          composables: [
             '@/composables/useAudio',
             '@/composables/useNotification',
             '@/composables/useSettings',
             '@/composables/useTimer'
+          ],
+          components: [
+            '@/components/settings',
+            '@/components/audio',
+            '@/components/timer',
+            '@/components/stats'
           ]
         }
       }
-    }
+    },
+    cssCodeSplit: true,
+    sourcemap: false,
+    assetsInlineLimit: 4096, // 4kb
+    reportCompressedSize: true
+  },
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'pinia', 'element-plus'],
+    exclude: ['@types/uuid']
   }
 })

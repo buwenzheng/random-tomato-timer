@@ -8,8 +8,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    DailyStats: typeof import('./../components/stats/DailyStats.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
@@ -21,13 +24,22 @@ declare module 'vue' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
+    ElTabs: typeof import('element-plus/es')['ElTabs']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
+    Icon: typeof import('./../components/common/Icon.vue')['default']
     KeyboardShortcuts: typeof import('./../components/settings/KeyboardShortcuts.vue')['default']
+    MonthlyStats: typeof import('./../components/stats/MonthlyStats.vue')['default']
+    NavBar: typeof import('./../components/NavBar.vue')['default']
+    OptimizedImage: typeof import('./../components/common/OptimizedImage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SettingsDialog: typeof import('./../components/settings/SettingsDialog.vue')['default']
     StatsPanel: typeof import('./../components/stats/StatsPanel.vue')['default']
+    StatsView: typeof import('./../components/stats/StatsView.vue')['default']
     TaskList: typeof import('./../components/tasks/TaskList.vue')['default']
     TimerDisplay: typeof import('./../components/timer/TimerDisplay.vue')['default']
     VolumeControl: typeof import('./../components/audio/VolumeControl.vue')['default']
+    WeeklyStats: typeof import('./../components/stats/WeeklyStats.vue')['default']
   }
 }

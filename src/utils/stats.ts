@@ -1,4 +1,4 @@
-import { PomodoroRecord, DailyStats, WeeklyStats, MonthlyStats } from './storage'
+import type { PomodoroRecord, DailyStats, WeeklyStats, MonthlyStats } from '../types/timer'
 import { PomodoroSession, PomodoroStats } from '@/types/pomodoro'
 
 export const calculateDailyStats = (records: PomodoroRecord[], date: string): DailyStats => {
@@ -49,7 +49,7 @@ export const calculateWeeklyStats = (records: PomodoroRecord[], weekStart: strin
     const date = new Date(weekStart)
     date.setDate(date.getDate() + i)
     const dateStr = date.toISOString().split('T')[0]
-    dailyStats.push(calculateDailyStats(records, dateStr))
+    dailyStats.push(calculateDailyStats(weekRecords, dateStr))
   }
 
   const totalFocusTime = dailyStats.reduce((sum, day) => sum + day.focusTime, 0)
@@ -83,7 +83,7 @@ export const calculateMonthlyStats = (records: PomodoroRecord[], month: string):
 
   while (currentWeekStart <= lastDay) {
     const weekStartStr = currentWeekStart.toISOString().split('T')[0]
-    weeklyStats.push(calculateWeeklyStats(records, weekStartStr))
+    weeklyStats.push(calculateWeeklyStats(monthRecords, weekStartStr))
     currentWeekStart.setDate(currentWeekStart.getDate() + 7)
   }
 

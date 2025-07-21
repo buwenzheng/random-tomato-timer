@@ -1,5 +1,3 @@
-import type { Ref } from 'vue'
-
 export interface TimerSettings {
   pomodoroMinutes: number
   breakMinutes: number
@@ -30,19 +28,19 @@ export interface Timer {
 
 export interface PomodoroRecord {
   id: string
-  startTime: number
-  endTime: number
+  startTime: string
+  endTime: string
   duration: number
-  isBreak: boolean
+  type: 'focus' | 'break'
   completed: boolean
 }
 
 export interface DailyStats {
-  date: string // YYYY-MM-DD
-  totalFocusTime: number // 总专注时间（分钟）
-  totalBreakTime: number // 总休息时间（分钟）
-  completedPomodoros: number // 完成的番茄钟数量
-  completedTasks: number // 完成的任务数量（保留字段以保持兼容性）
+  date: string
+  focusTime: number
+  breakTime: number
+  completedPomodoros: number
+  totalPomodoros: number
 }
 
 export interface NotificationOptions {
@@ -53,3 +51,22 @@ export interface NotificationOptions {
 }
 
 export type TimerAction = 'start' | 'pause' | 'resume' | 'end' | 'break'
+
+export interface WeeklyStats {
+  weekStart: string
+  weekEnd: string
+  totalFocusTime: number
+  totalBreakTime: number
+  completedPomodoros: number
+  totalPomodoros: number
+  dailyStats: DailyStats[]
+}
+
+export interface MonthlyStats {
+  month: string // YYYY-MM
+  totalFocusTime: number
+  totalBreakTime: number
+  completedPomodoros: number
+  totalPomodoros: number
+  weeklyStats: WeeklyStats[]
+}

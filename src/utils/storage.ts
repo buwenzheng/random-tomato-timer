@@ -1,46 +1,12 @@
 import { ref, watch } from 'vue'
 import { PomodoroSession } from '../types/pomodoro'
+import type { DailyStats, WeeklyStats, MonthlyStats } from '../types/timer'
 
 const STORAGE_KEY = {
   SETTINGS: 'pomodoro-settings',
   RECORDS: 'pomodoro-records',
   STATS: 'pomodoro-stats',
   SESSIONS: 'pomodoro_sessions'
-}
-
-export interface PomodoroRecord {
-  id: string
-  startTime: string
-  endTime: string
-  completed: boolean
-  type: 'focus' | 'break'
-}
-
-export interface DailyStats {
-  date: string
-  focusTime: number // 分钟
-  breakTime: number // 分钟
-  completedPomodoros: number
-  totalPomodoros: number
-}
-
-export interface WeeklyStats {
-  weekStart: string
-  weekEnd: string
-  totalFocusTime: number
-  totalBreakTime: number
-  completedPomodoros: number
-  totalPomodoros: number
-  dailyStats: DailyStats[]
-}
-
-export interface MonthlyStats {
-  month: string // YYYY-MM
-  totalFocusTime: number
-  totalBreakTime: number
-  completedPomodoros: number
-  totalPomodoros: number
-  weeklyStats: WeeklyStats[]
 }
 
 export const useStorage = () => {

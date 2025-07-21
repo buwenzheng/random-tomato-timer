@@ -44,6 +44,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { ElMessage } from 'element-plus'
+  import type { UploadFile } from 'element-plus'
   import DailyStats from '@/components/stats/DailyStats.vue'
   import WeeklyStats from '@/components/stats/WeeklyStats.vue'
   import MonthlyStats from '@/components/stats/MonthlyStats.vue'
@@ -61,9 +62,9 @@
     return weekStart.toISOString().split('T')[0]
   }
 
-  const handleFileChange = async (file: any) => {
+  const handleFileChange = async (file: UploadFile) => {
     try {
-      await importData(file.raw)
+      await importData(file.raw as File)
       ElMessage.success('数据导入成功')
     } catch (error) {
       ElMessage.error('数据导入失败')
